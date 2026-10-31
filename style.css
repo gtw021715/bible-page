@@ -140,3 +140,7 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 .timer-sidebar .timer-count{font-size:clamp(42px,5vw,58px);min-width:110px;padding:12px 14px;font-weight:900;}
 .timer-sidebar .timer-count small{font-size:16px;}
 @media(max-width:680px){.timer-sidebar .timer-count{font-size:42px;min-width:105px;padding:9px 12px;}}
+
+/* 題數標示：加大並提高對比，保留原有位置與功能 */
+#progress-label{font-size:clamp(20px,3.4vw,28px);font-weight:900;color:#75451f;background:#fff0cf;border:2px solid #e8bd72;border-radius:12px;padding:8px 14px;line-height:1.35;white-space:nowrap;}
+@media(max-width:400px){#progress-label{font-size:19px;padding:7px 9px;}}
