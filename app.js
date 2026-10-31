@@ -13,12 +13,12 @@ const CATEGORIES = [
   {name:"普通書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
-let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=20, lastMode="order";
+let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=20, lastMode="order", lastDifficulty="normal";
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
-function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value){
-  lastScope=scope;lastCount=count;lastMode=mode;
+function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value,difficulty=$("difficulty").value){
+  lastScope=scope;lastCount=count;lastMode=mode;lastDifficulty=difficulty;
   const pool=poolFor(scope);
   const chosen=onlyWrong?shuffle(onlyWrong):shuffle(pool).slice(0,Math.min(count,pool.length));
   questions=chosen.map(book=>({book,scope:OLD.includes(book)?"舊約":"新約",category:CATEGORIES.find(c=>c.books.includes(book))?.name||"其他"}));
@@ -41,10 +41,18 @@ function renderQuestion(){
     $("question-hint").textContent="請選出空格中正確的聖經書卷";
     $("question-title").textContent="以下目錄中，缺少的是哪一卷？";
     const pos=pool.indexOf(q.book);
-    const start=Math.max(0,Math.min(pos-2,pool.length-6));
-    const segment=pool.slice(start,start+6);
-    const blankIndex=pos-start;
-    $("book-list").innerHTML=segment.map((b,i)=>`<div class="book-item ${i===blankIndex?"blank":""}"><span class="num">${start+i+1}.</span><span>${i===blankIndex?"？ ＿＿＿＿":b}</span></div>`).join("");
+    const beforeCount=lastDifficulty==="easy"?1:lastDifficulty==="normal"?1:2;
+    const afterCount=lastDifficulty==="easy"?0:lastDifficulty==="normal"?1:2;
+    const start=Math.max(0,pos-beforeCount);
+    const end=Math.min(pool.length-1,pos+afterCount);
+    const visibleBooks=[];
+    for(let bookIndex=start;bookIndex<=end;bookIndex++){
+      if(bookIndex===pos) visibleBooks.push(`<div class="book-item blank"><span class="num">${bookIndex+1}.</span><span>？　＿＿＿＿</span></div>`);
+      else visibleBooks.push(`<div class="book-item"><span class="num">${bookIndex+1}.</span><span>${pool[bookIndex]}</span></div>`);
+    }
+    $("book-list").innerHTML=visibleBooks.join("");
+    const difficultyNames={easy:"簡單",normal:"普通",hard:"困難"};
+    $("question-hint").textContent=`${difficultyNames[lastDifficulty]}難度：依照相鄰書卷判斷`;
     opts=shuffle([q.book,...shuffle(pool.filter(b=>b!==q.book)).slice(0,3)]);
   }
   $("options").innerHTML=opts.map((b,i)=>`<button class="option" data-answer="${b}"><span class="letter">${"ABCD"[i]}</span>${b}</button>`).join("");
@@ -77,9 +85,9 @@ function showResult(){
   if(wrong.length){review.classList.remove("hidden");list.innerHTML=wrong.map((w,i)=>`<div class="wrong-row">${i+1}. ${w.mode==="category"?`書卷：${w.book}；正確分類：`:`正確答案：`}<strong>${w.expected||w.book}</strong>　你的答案：${w.answer}</div>`).join("");}
   else review.classList.add("hidden");
 }
-$("start-btn").addEventListener("click",()=>startQuiz($("scope").value,Number($("question-count").value),null,$("game-mode").value));
+$("start-btn").addEventListener("click",()=>startQuiz($("scope").value,Number($("question-count").value),null,$("game-mode").value,$("difficulty").value));
 $("next-btn").addEventListener("click",nextQuestion);
 $("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
-$("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode));
+$("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode,lastDifficulty));
 $("home-btn").addEventListener("click",()=>{$("result").classList.add("hidden");$("setup").classList.remove("hidden");});
-$("retry-wrong-btn").addEventListener("click",()=>startQuiz(lastScope,wrong.length,wrong.map(w=>w.book),lastMode));
+$("retry-wrong-btn").addEventListener("click",()=>startQuiz(lastScope,wrong.length,wrong.map(w=>w.book),lastMode,lastDifficulty));
