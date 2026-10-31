@@ -1,12 +1,12 @@
 const OLD = ["創世記","出埃及記","利未記","民數記","申命記","約書亞記","士師記","路得記","撒母耳記上","撒母耳記下","列王紀上","列王紀下","歷代志上","歷代志下","以斯拉記","尼希米記","以斯帖記","約伯記","詩篇","箴言","傳道書","雅歌","以賽亞書","耶利米書","耶利米哀歌","以西結書","但以理書","何西阿書","約珥書","阿摩司書","俄巴底亞書","約拿書","彌迦書","那鴻書","哈巴谷書","西番雅書","哈該書","撒迦利亞書","瑪拉基書"];
 const NEW = ["馬太福音","馬可福音","路加福音","約翰福音","使徒行傳","羅馬書","哥林多前書","哥林多後書","加拉太書","以弗所書","腓立比書","歌羅西書","帖撒羅尼迦前書","帖撒羅尼迦後書","提摩太前書","提摩太後書","提多書","腓利門書","希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書","啟示錄"];
 const $ = id => document.getElementById(id);
-let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=20, lastClueMode="four";
+let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=10, lastClueMode="four";
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
 function startQuiz(scope,count,onlyWrong=null,clueMode=null){
-  lastScope=scope;lastCount=count;
+  lastScope=scope;lastCount=10;
   lastClueMode=clueMode||lastClueMode;
   const pool=poolFor(scope);
   const radius=lastClueMode==="four"?2:1;
@@ -16,7 +16,7 @@ function startQuiz(scope,count,onlyWrong=null,clueMode=null){
     if(lastClueMode==="one-above") return p>=1;
     return p>=radius && p<testament.length-radius;
   });
-  const chosen=onlyWrong?shuffle(onlyWrong):shuffle(eligible).slice(0,Math.min(count,eligible.length));
+  const chosen=onlyWrong?shuffle(onlyWrong):shuffle(eligible).slice(0,Math.min(10,eligible.length));
   questions=chosen.map(book=>({book,scope:OLD.includes(book)?"舊約":"新約"}));
   index=0;correct=0;wrong=[];answered=false;
   $("setup").classList.add("hidden");$("result").classList.add("hidden");$("quiz").classList.remove("hidden");
@@ -67,7 +67,7 @@ function showResult(){
   if(wrong.length){review.classList.remove("hidden");list.innerHTML=wrong.map((w,i)=>`<div class="wrong-row">${i+1}. 正確答案：<strong>${w.book}</strong>　你的答案：${w.answer}</div>`).join("");}
   else review.classList.add("hidden");
 }
-$("start-btn").addEventListener("click",()=>startQuiz($("scope").value,Number($("question-count").value),null,$("clue-mode").value));
+$("start-btn").addEventListener("click",()=>startQuiz($("scope").value,10,null,$("clue-mode").value));
 $("next-btn").addEventListener("click",nextQuestion);
 $("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
 $("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastClueMode));
