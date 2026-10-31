@@ -10,7 +10,7 @@ const CATEGORIES = [
   {name:"四福音書", books:["馬太福音","馬可福音","路加福音","約翰福音"]},
   {name:"教會歷史書", books:["使徒行傳"]},
   {name:"保羅書信", books:["羅馬書","哥林多前書","哥林多後書","加拉太書","以弗所書","腓立比書","歌羅西書","帖撒羅尼迦前書","帖撒羅尼迦後書","提摩太前書","提摩太後書","提多書","腓利門書"]},
-  {name:"普通書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
+  {name:"一般書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
 let questions=[], index=0, correct=0, wrong=[], answered=false, fiftyUsed=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
