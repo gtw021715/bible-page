@@ -34,8 +34,8 @@ button{font:inherit;cursor:pointer;border:0}
 .progress div{height:100%;width:0;background:linear-gradient(90deg,#d99d45,#edc76e);transition:width .3s}
 .question-heading{text-align:center;margin-bottom:22px}
 .question-heading h2{font-size:clamp(19px,4vw,25px);margin-top:5px}
-.book-list{background:#fbf6ec;border:1px solid #efe3d0;border-radius:16px;padding:18px 20px;margin-bottom:22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.book-item{padding:9px 11px;border-radius:9px;background:#fffefa;font-size:14px;display:flex;gap:9px;align-items:center}
+.book-list{background:#fbf6ec;border:1px solid #efe3d0;border-radius:16px;padding:18px 20px;margin-bottom:22px;display:flex;flex-direction:column;gap:8px}
+.book-item{padding:11px 13px;border-radius:9px;background:#fffefa;font-size:15px;display:flex;gap:10px;align-items:center;min-height:42px}
 .book-item .num{color:#b59a78;font-size:12px;min-width:18px}
 .book-item.blank{background:#fff0cf;border:1px dashed #d59b43;color:#98601f;font-weight:900;justify-content:center}
 .options{display:grid;grid-template-columns:1fr 1fr;gap:11px}
@@ -66,4 +66,4 @@ button{font:inherit;cursor:pointer;border:0}
 .wrong-row:last-child{border:0}
 .wrong-review .secondary{margin-top:14px}
 footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
-@media(max-width:520px){body{padding:16px 10px}.setting-grid{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}.book-list{grid-template-columns:1fr 1fr;padding:12px;gap:7px}.book-item{font-size:12px;padding:8px 6px}.options{grid-template-columns:1fr}.verse{font-size:11px}.panel{border-radius:18px}}
+@media(max-width:520px){body{padding:16px 10px}.setting-grid{grid-template-columns:1fr}.book-list{padding:12px;gap:7px}.book-item{font-size:14px;padding:9px 10px}.options{grid-template-columns:1fr}.panel{border-radius:18px}}
