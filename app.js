@@ -8,12 +8,12 @@ const CATEGORIES = [
   {name:"大先知書", books:["以賽亞書","耶利米書","耶利米哀歌","以西結書","但以理書"]},
   {name:"小先知書", books:["何西阿書","約珥書","阿摩司書","俄巴底亞書","約拿書","彌迦書","那鴻書","哈巴谷書","西番雅書","哈該書","撒迦利亞書","瑪拉基書"]},
   {name:"四福音書", books:["馬太福音","馬可福音","路加福音","約翰福音"]},
-  {name:"教會歷史書", books:["使徒行傳"]},
+  {name:"新約歷史書", books:["使徒行傳"]},
   {name:"保羅書信", books:["羅馬書","哥林多前書","哥林多後書","加拉太書","以弗所書","腓立比書","歌羅西書","帖撒羅尼迦前書","帖撒羅尼迦後書","提摩太前書","提摩太後書","提多書","腓利門書"]},
   {name:"一般書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
-let questions=[], index=0, correct=0, wrong=[], answered=false, fiftyUsed=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
+let questions=[], index=0, correct=0, wrong=[], answered=false, fiftyUsed=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40, timerDeadline=0, bibleUsed=false, teacherUsed=false;
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
@@ -35,16 +35,16 @@ function startTimer(){
   stopTimer();
   const duration=40;
   const value=$("timer-value"), bar=$("timer-bar");
-  const deadline=Date.now()+duration*1000;
+  timerDeadline=Date.now()+duration*1000;
   timeLeft=duration;
   value.textContent=String(duration);
   bar.style.width="100%";
   bar.classList.remove("urgent");
   timerInterval=setInterval(()=>{
-    const remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));
+    const remaining=Math.max(0,Math.ceil((timerDeadline-Date.now())/1000));
     timeLeft=remaining;
     value.textContent=String(remaining);
-    bar.style.width=`${Math.max(0,(deadline-Date.now())/(duration*1000)*100)}%`;
+    bar.style.width=`${Math.min(100,Math.max(0,(timerDeadline-Date.now())/(duration*1000)*100))}%`;
     if(remaining<=10)bar.classList.add("urgent");
     if(remaining<=0){
       stopTimer();
@@ -60,12 +60,12 @@ function startTimer(){
 function renderQuestion(){
   stopTimer();
   answered=false;
-  fiftyUsed=false;
-  const fiftyBtn=$("fifty-btn");
-  fiftyBtn.classList.toggle("hidden", lastMode!=="order");
-  fiftyBtn.disabled=false;
-  fiftyBtn.classList.remove("used");
-  fiftyBtn.innerHTML='<span class="fifty-icon" aria-hidden="true">½</span><span class="fifty-copy"><strong>50/50 選項刪除</strong><small>移除 2 個錯誤選項</small></span><span class="fifty-spark" aria-hidden="true">✦</span>';
+  fiftyUsed=false; bibleUsed=false; teacherUsed=false;
+  $("help-actions").classList.toggle("hidden", lastMode!=="order");
+  $("fifty-btn").disabled=false; $("fifty-btn").classList.remove("used");
+  $("teacher-btn").disabled=false; $("teacher-btn").classList.remove("used");
+  $("bible-btn").disabled=false; $("bible-btn").classList.remove("used");
+  $("help-feedback").classList.add("hidden"); $("help-feedback").textContent="";
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
   let opts=[];
   if(lastMode==="category"){
@@ -112,7 +112,25 @@ function useFiftyFifty(){
   const wrongButtons=shuffle(buttons.filter(btn=>btn.dataset.answer!==expected));
   wrongButtons.slice(0,2).forEach(btn=>btn.remove());
   fiftyUsed=true;
-  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.innerHTML='<span class="fifty-icon" aria-hidden="true">✓</span><span class="fifty-copy"><strong>50/50 已使用</strong><small>本題已移除兩個錯誤選項</small></span>';
+  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>50/50 已使用</strong><small>已刪除兩個錯誤選項</small>';
+}
+function showHelpMessage(message){
+  const el=$("help-feedback");el.textContent=message;el.classList.remove("hidden");
+}
+function askTeacher(){
+  if(teacherUsed || answered || lastMode!=="order") return;
+  const q=questions[index];
+  const category=CATEGORIES.find(c=>c.books.includes(q.book));
+  const pos=(q.scope==="舊約"?OLD:NEW).indexOf(q.book)+1;
+  showHelpMessage(`老師提示：這卷書屬於「${category?.name||q.scope}」。在${q.scope}中排第 ${pos} 卷。`);
+  teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>已問老師</strong><small>提示已提供</small>';
+}
+function useBibleTime(){
+  if(bibleUsed || answered || lastMode!=="order") return;
+  timerDeadline+=10000;
+  bibleUsed=true;
+  const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>已翻聖經</strong><small>增加 10 秒查找時間</small>';
+  showHelpMessage("📖 已為你增加 10 秒，快把握時間查找！");
 }
 function choose(answer){
   if(answered)return;answered=true;stopTimer();
@@ -142,6 +160,8 @@ function showResult(){
 $("start-btn").addEventListener("click",()=>startQuiz($("scope").value,10,null,$("game-mode").value,$("difficulty").value));
 $("next-btn").addEventListener("click",nextQuestion);
 $("fifty-btn").addEventListener("click",useFiftyFifty);
+$("teacher-btn").addEventListener("click",askTeacher);
+$("bible-btn").addEventListener("click",useBibleTime);
 $("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){stopTimer();$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
 $("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode,lastDifficulty));
 $("home-btn").addEventListener("click",()=>{$("result").classList.add("hidden");$("setup").classList.remove("hidden");});

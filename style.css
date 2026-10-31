@@ -99,3 +99,29 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 .fifty-copy{display:grid;gap:3px;flex:1}.fifty-copy strong{font-size:15px;letter-spacing:.2px}.fifty-copy small{font-size:12px;font-weight:500;color:#9a7549}.fifty-spark{font-size:23px;color:#c58a35}
 .fifty-btn:disabled{cursor:default}.fifty-btn.used{border-color:#d9c9b2;background:#f5f0e8;color:#8d8174;box-shadow:none}.fifty-btn.used .fifty-icon{background:#b6a99a}.fifty-btn.used .fifty-copy small{color:#8d8174}.fifty-btn.used .fifty-spark{display:none}
 @media(max-width:520px){.timer-card{padding:11px;gap:9px}.timer-icon{width:38px;height:38px;font-size:22px}.timer-copy{font-size:12px}.timer-count{font-size:25px;min-width:74px;padding:5px 8px}}
+
+/* 計時器固定在答題畫面右側，手機版自動移到上方 */
+.quiz-layout{display:grid;grid-template-columns:minmax(0,1fr) 205px;gap:22px;align-items:start;margin-top:14px}
+.quiz-main{min-width:0}
+.timer-sidebar{position:sticky;top:18px;grid-column:2;grid-row:1;padding:12px;background:#fff8e9;border:1px solid #e9d2a5;border-radius:18px;box-shadow:0 8px 22px #68431a10}
+.timer-sidebar .timer-card{display:flex;flex-direction:column;text-align:center;gap:8px;padding:12px 8px;margin:0 0 10px;border:0;box-shadow:none;background:transparent}
+.timer-sidebar .timer-icon{width:42px;height:42px}
+.timer-sidebar .timer-copy{font-size:12px}
+.timer-sidebar .timer-copy small{font-size:10px}
+.timer-sidebar .timer-count{margin:0;min-width:0;width:100%;justify-content:center;font-size:34px;padding:7px 10px}
+.timer-sidebar .timer-track{margin:0 2px;height:9px}
+.timer-note{margin:10px 0 2px;text-align:center;font-size:11px;color:#98784e}
+.help-actions{margin-top:20px;padding:15px;border:1px solid #e9dfcf;border-radius:17px;background:linear-gradient(135deg,#fffdf8,#fbf4e8)}
+.help-title{margin:0 0 11px;font-size:14px;font-weight:900;color:#75451f}
+.help-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.help-btn{display:flex;align-items:center;gap:9px;min-width:0;padding:11px;border-radius:13px;border:1px solid #e4d5be;background:#fff;text-align:left;color:#493725;box-shadow:0 3px 0 #68431a0c;transition:transform .18s,box-shadow .18s}
+.help-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 14px #68431a16}
+.help-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:11px;font-size:20px;font-weight:900;color:white;background:linear-gradient(145deg,#a66b2e,#75451f)}
+.teacher-btn .help-icon{background:linear-gradient(145deg,#4d9b80,#24694f)}
+.bible-btn .help-icon{background:linear-gradient(145deg,#7795c4,#3f5f92)}
+.help-copy{display:grid;gap:3px;min-width:0}.help-copy strong{font-size:13px}.help-copy small{font-size:11px;line-height:1.4;color:#8b7965}
+.help-btn.used{opacity:.62;background:#f2eee7;box-shadow:none;cursor:default}
+.help-btn:disabled{cursor:default}
+.help-feedback{margin-top:11px;padding:11px 13px;border-radius:11px;background:#f3eddf;color:#6d4b24;font-size:13px;line-height:1.65}
+@media(max-width:680px){.quiz-layout{grid-template-columns:1fr;gap:12px}.timer-sidebar{position:static;grid-column:1;grid-row:1;display:grid;grid-template-columns:minmax(0,1fr);padding:8px}.timer-sidebar .timer-card{flex-direction:row;text-align:left;justify-content:flex-start;padding:6px 8px}.timer-sidebar .timer-count{margin-left:auto;width:auto;min-width:78px;font-size:27px}.timer-sidebar .timer-icon{width:38px;height:38px;font-size:22px}.timer-sidebar .timer-track{margin:0 8px}.timer-note{display:none}.quiz-main{grid-row:2}.help-buttons{grid-template-columns:1fr}.help-btn{padding:9px 11px}.help-icon{flex-basis:36px;width:36px;height:36px}}
+.help-btn.fifty-btn{margin-top:0;width:100%;box-shadow:0 3px 0 #68431a0c}
