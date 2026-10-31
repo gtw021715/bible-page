@@ -144,3 +144,9 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 /* 題數標示：加大並提高對比，保留原有位置與功能 */
 #progress-label{font-size:clamp(20px,3.4vw,28px);font-weight:900;color:#75451f;background:#fff0cf;border:2px solid #e8bd72;border-radius:12px;padding:8px 14px;line-height:1.35;white-space:nowrap;}
 @media(max-width:400px){#progress-label{font-size:19px;padding:7px 9px;}}
+
+/* Help tools appear directly below the countdown timer. */
+.timer-sidebar .help-actions{margin-top:14px;padding:10px;}
+.timer-sidebar .help-buttons{grid-template-columns:1fr;gap:8px;}
+.timer-sidebar .help-btn{min-width:0;padding:9px 7px;}
+@media(max-width:680px){.timer-sidebar .help-actions{margin-top:10px;}.timer-sidebar .help-buttons{grid-template-columns:repeat(3,minmax(0,1fr));}.timer-sidebar .help-btn{flex-direction:column;gap:5px;text-align:center;}.timer-sidebar .help-icon{flex-basis:auto;}}
