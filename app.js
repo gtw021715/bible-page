@@ -28,20 +28,27 @@ function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value,difficul
   $("scope-label").textContent=(scope==="old"?"舊約":scope==="new"?"新約":"新舊約混合")+"・"+modeLabel;
   renderQuestion();
 }
+// 每次啟動題目都清除前一個計時器，避免多個倒數同時執行。
 function stopTimer(){
   if(timerInterval !== null){clearInterval(timerInterval);timerInterval=null;}
 }
 function updateTimerDisplay(){
-  const remainingMs=Math.max(0,timerDeadline-Date.now());
-  timeLeft=Math.ceil(remainingMs/1000);
   const value=$("timer-value"), bar=$("timer-bar");
   if(value) value.textContent=String(timeLeft);
   if(bar){
-    // 50 秒是使用「翻聖經10秒」後的最高可能值。
-    bar.style.width=`${Math.min(100,remainingMs/40000*100)}%`;
+    bar.style.width=`${Math.min(100,timeLeft/40*100)}%`;
     bar.classList.toggle("urgent",timeLeft<=10);
   }
-  if(remainingMs<=0){
+}
+function timerTick(){
+  if(answered || $("quiz").classList.contains("hidden")){
+    stopTimer();return;
+  }
+  // 根據實際經過的秒數扣除時間，避免背景分頁造成計時失準。
+  const now=Date.now();
+  timeLeft=Math.max(0,Math.ceil((timerDeadline-now)/1000));
+  updateTimerDisplay();
+  if(timeLeft===0){
     stopTimer();
     if(!answered && questions[index]){
       answered=true;
@@ -54,9 +61,10 @@ function updateTimerDisplay(){
 }
 function startTimer(){
   stopTimer();
+  timeLeft=40;
   timerDeadline=Date.now()+40000;
   updateTimerDisplay();
-  timerInterval=setInterval(updateTimerDisplay,200);
+  timerInterval=setInterval(timerTick,250);
 }
 function setHelpLabel(button, label, used){
   const copy=button.querySelector(".help-copy");
@@ -153,7 +161,7 @@ function askTeacher(){
 function useBibleTime(){
   if(bibleUsed || answered) return;
   timerDeadline+=10000;
-  updateTimerDisplay();
+  timerTick();
   bibleUsed=true;
   const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"翻聖經10秒",true);
   showHelpMessage("📖 已為你增加 10 秒，快把握時間查找！");
@@ -200,4 +208,4 @@ $("game-mode").addEventListener("change", updateDifficultyVisibility);
 updateDifficultyVisibility();
 
 // 切換回頁面時依實際時間立即更新倒數。
-document.addEventListener("visibilitychange",()=>{if(!document.hidden && timerInterval!==null)updateTimerDisplay();});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden && timerInterval!==null)timerTick();});
