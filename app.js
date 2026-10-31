@@ -57,13 +57,26 @@ function startTimer(){
     }
   },200);
 }
+function setHelpLabel(button, label, used){
+  const copy=button.querySelector(".help-copy");
+  copy.replaceChildren();
+  const title=document.createElement("strong");
+  title.textContent=label;
+  copy.appendChild(title);
+  if(used){
+    const status=document.createElement("span");
+    status.className="help-used-status";
+    status.textContent="已使用";
+    copy.appendChild(status);
+  }
+}
 function renderQuestion(){
   stopTimer();
   answered=false;
   $("help-actions").classList.toggle("hidden", lastMode!=="order");
   [["fifty-btn",fiftyUsed,"50/50"],["teacher-btn",teacherUsed,"問老師"],["bible-btn",bibleUsed,"翻聖經10秒"]].forEach(([id,used,label])=>{
     const btn=$(id);btn.disabled=used;btn.classList.toggle("used",used);
-    btn.querySelector(".help-copy strong").textContent=used?`${label}\n已使用`:label;
+    setHelpLabel(btn, label, used);
   });
   $("help-feedback").classList.add("hidden"); $("help-feedback").textContent="";
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
@@ -116,7 +129,7 @@ function useFiftyFifty(){
     if(letter) letter.textContent="ABCD"[i];
   });
   fiftyUsed=true;
-  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy strong").textContent="50/50\n已使用";
+  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"50/50",true);
 }
 function showHelpMessage(message){
   const el=$("help-feedback");el.textContent=message;el.classList.remove("hidden");
@@ -127,13 +140,13 @@ function askTeacher(){
   const category=CATEGORIES.find(c=>c.books.includes(q.book));
   const pos=(q.scope==="舊約"?OLD:NEW).indexOf(q.book)+1;
   showHelpMessage(`老師提示：這卷書屬於「${category?.name||q.scope}」。在${q.scope}中排第 ${pos} 卷。`);
-  teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy strong").textContent="問老師\n已使用";
+  teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"問老師",true);
 }
 function useBibleTime(){
   if(bibleUsed || answered || lastMode!=="order") return;
   timerDeadline+=10000;
   bibleUsed=true;
-  const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy strong").textContent="翻聖經10秒\n已使用";
+  const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"翻聖經10秒",true);
   showHelpMessage("📖 已為你增加 10 秒，快把握時間查找！");
 }
 function choose(answer){
