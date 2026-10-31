@@ -111,6 +111,10 @@ function useFiftyFifty(){
   const expected=questions[index].book;
   const wrongButtons=shuffle(buttons.filter(btn=>btn.dataset.answer!==expected));
   wrongButtons.slice(0,2).forEach(btn=>btn.remove());
+  [...$("options").querySelectorAll("button")].forEach((option,i)=>{
+    const letter=option.querySelector(".letter");
+    if(letter) letter.textContent="ABCD"[i];
+  });
   fiftyUsed=true;
   const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>50/50 已使用</strong><small>已刪除兩個錯誤選項</small>';
 }

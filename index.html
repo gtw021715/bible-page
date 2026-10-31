@@ -48,25 +48,49 @@
     <section id="quiz" class="panel quiz-panel hidden">
       <div class="quiz-top">
         <span id="scope-label" class="tag">混合抽考</span>
-        <span id="progress-label" class="muted">第 1 / 20 題</span>
+        <span id="progress-label" class="muted">第 1 / 10 題</span>
       </div>
-      <div class="timer-card" aria-live="polite">
-        <span class="timer-icon" aria-hidden="true">⏱</span>
-        <div class="timer-copy"><span>本題倒數計時</span><small>請把握時間作答</small></div>
-        <strong class="timer-count"><span id="timer-value">40</span><small>秒</small></strong>
+      <div class="quiz-layout">
+        <div class="quiz-main">
+          <div class="progress"><div id="progress-bar"></div></div>
+          <div class="question-heading">
+            <p id="question-hint" class="muted">請選出空格中正確的聖經書卷</p>
+            <h2 id="question-title">以下目錄中，缺少的是哪一卷？</h2>
+          </div>
+          <div id="book-list" class="book-list"></div>
+          <div id="options" class="options"></div>
+          <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+          <button id="next-btn" class="primary wide hidden">下一題 →</button>
+          <div id="help-actions" class="help-actions">
+            <p class="help-title">🆘 求救工具</p>
+            <div class="help-buttons">
+              <button id="fifty-btn" class="help-btn fifty-btn">
+                <span class="help-icon">½</span>
+                <span class="help-copy"><strong>50/50</strong><small>刪除兩個錯誤選項</small></span>
+              </button>
+              <button id="teacher-btn" class="help-btn teacher-btn">
+                <span class="help-icon">🙋</span>
+                <span class="help-copy"><strong>問老師</strong><small>取得書卷提示</small></span>
+              </button>
+              <button id="bible-btn" class="help-btn bible-btn">
+                <span class="help-icon">📖</span>
+                <span class="help-copy"><strong>翻聖經 +10 秒</strong><small>增加查找時間</small></span>
+              </button>
+            </div>
+            <div id="help-feedback" class="help-feedback hidden" aria-live="polite"></div>
+          </div>
+          <button id="quit-btn" class="text-btn">結束本回合</button>
+        </div>
+        <aside class="timer-sidebar" aria-label="答題計時器">
+          <div class="timer-card" aria-live="polite">
+            <span class="timer-icon" aria-hidden="true">⏱</span>
+            <div class="timer-copy"><span>本題倒數計時</span><small>請把握時間作答</small></div>
+            <strong class="timer-count"><span id="timer-value">40</span><small>秒</small></strong>
+          </div>
+          <div class="timer-track"><div id="timer-bar"></div></div>
+          <p class="timer-note">剩餘時間歸零將自動進入下一題</p>
+        </aside>
       </div>
-      <div class="timer-track"><div id="timer-bar"></div></div>
-      <div class="progress"><div id="progress-bar"></div></div>
-      <div class="question-heading">
-        <p id="question-hint" class="muted">請選出空格中正確的聖經書卷</p>
-        <h2 id="question-title">以下目錄中，缺少的是哪一卷？</h2>
-      </div>
-      <div id="book-list" class="book-list"></div>
-      <div id="options" class="options"></div>
-      <button id="fifty-btn" class="fifty-btn"><span class="fifty-icon" aria-hidden="true">½</span><span class="fifty-copy"><strong>50/50 選項刪除</strong><small>移除 2 個錯誤選項</small></span><span class="fifty-spark" aria-hidden="true">✦</span></button>
-      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
-      <button id="next-btn" class="primary wide hidden">下一題 →</button>
-      <button id="quit-btn" class="text-btn">結束本回合</button>
     </section>
 
     <section id="result" class="panel result-panel hidden">
@@ -88,7 +112,7 @@
       <button id="again-btn" class="primary wide">再挑戰一次</button>
       <button id="home-btn" class="text-btn">返回開始畫面</button>
     </section>
-    <footer>聖經目錄大挑戰 · 單人練習版</footer>
+    
   </main>
   <script src="app.js"></script>
 </body>
