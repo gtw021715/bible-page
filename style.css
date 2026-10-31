@@ -38,7 +38,7 @@ button{font:inherit;cursor:pointer;border:0}
 .book-item{padding:12px 14px;border-radius:9px;background:#fffefa;font-size:14px;display:flex;gap:9px;align-items:center;min-height:44px}
 .book-item .num{color:#b59a78;font-size:12px;min-width:18px}
 .book-item.blank{background:#fff0cf;border:1px dashed #d59b43;color:#98601f;font-weight:900;justify-content:flex-start;min-height:48px}
-.options{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.options{display:grid;grid-template-columns:1fr;gap:11px}
 .option{padding:14px;border:1.5px solid #e8ddcd;border-radius:13px;background:white;text-align:left;display:flex;align-items:center;gap:11px;font-weight:700;color:var(--ink);transition:.15s}
 .option:hover:not(:disabled){border-color:#c8944e;background:#fffaf0}
 .option .letter{width:27px;height:27px;border-radius:8px;background:#f5eddf;color:#8d6539;display:grid;place-items:center;font-size:12px}
