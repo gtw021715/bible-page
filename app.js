@@ -29,33 +29,34 @@ function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value,difficul
   renderQuestion();
 }
 function stopTimer(){
-  if(timerInterval!==null){clearInterval(timerInterval);timerInterval=null;}
+  if(timerInterval !== null){clearInterval(timerInterval);timerInterval=null;}
+}
+function updateTimerDisplay(){
+  const remainingMs=Math.max(0,timerDeadline-Date.now());
+  timeLeft=Math.ceil(remainingMs/1000);
+  const value=$("timer-value"), bar=$("timer-bar");
+  if(value) value.textContent=String(timeLeft);
+  if(bar){
+    // 50 秒是使用「翻聖經10秒」後的最高可能值。
+    bar.style.width=`${Math.min(100,remainingMs/40000*100)}%`;
+    bar.classList.toggle("urgent",timeLeft<=10);
+  }
+  if(remainingMs<=0){
+    stopTimer();
+    if(!answered && questions[index]){
+      answered=true;
+      const q=questions[index];
+      const expected=lastMode==="category"?q.category:lastMode==="testament"?q.scope:q.book;
+      wrong.push({book:q.book,answer:"時間到（未作答）",expected,mode:lastMode});
+      nextQuestion();
+    }
+  }
 }
 function startTimer(){
   stopTimer();
-  const duration=40;
-  const value=$("timer-value"), bar=$("timer-bar");
-  timerDeadline=Date.now()+duration*1000;
-  timeLeft=duration;
-  value.textContent=String(duration);
-  bar.style.width="100%";
-  bar.classList.remove("urgent");
-  timerInterval=setInterval(()=>{
-    const remaining=Math.max(0,Math.ceil((timerDeadline-Date.now())/1000));
-    timeLeft=remaining;
-    value.textContent=String(remaining);
-    bar.style.width=`${Math.min(100,Math.max(0,(timerDeadline-Date.now())/(duration*1000)*100))}%`;
-    if(remaining<=10)bar.classList.add("urgent");
-    if(remaining<=0){
-      stopTimer();
-      if(!answered){
-        answered=true;
-        const q=questions[index], expected=lastMode==="category"?q.category:lastMode==="testament"?q.scope:q.book;
-        wrong.push({book:q.book,answer:"時間到（未作答）",expected,mode:lastMode});
-        nextQuestion();
-      }
-    }
-  },200);
+  timerDeadline=Date.now()+40000;
+  updateTimerDisplay();
+  timerInterval=setInterval(updateTimerDisplay,200);
 }
 function setHelpLabel(button, label, used){
   const copy=button.querySelector(".help-copy");
@@ -152,6 +153,7 @@ function askTeacher(){
 function useBibleTime(){
   if(bibleUsed || answered) return;
   timerDeadline+=10000;
+  updateTimerDisplay();
   bibleUsed=true;
   const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"翻聖經10秒",true);
   showHelpMessage("📖 已為你增加 10 秒，快把握時間查找！");
@@ -196,3 +198,6 @@ function updateDifficultyVisibility(){
 }
 $("game-mode").addEventListener("change", updateDifficultyVisibility);
 updateDifficultyVisibility();
+
+// 切換回頁面時依實際時間立即更新倒數。
+document.addEventListener("visibilitychange",()=>{if(!document.hidden && timerInterval!==null)updateTimerDisplay();});

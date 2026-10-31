@@ -135,3 +135,8 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 /* Keep the Bible help label together on one line; used status stays below. */
 #bible-btn .help-copy strong{white-space:nowrap;word-break:keep-all;}
 #bible-btn .help-copy{min-width:max-content;}
+
+/* 放大倒數秒數，桌面及手機皆清楚可見 */
+.timer-sidebar .timer-count{font-size:clamp(42px,5vw,58px);min-width:110px;padding:12px 14px;font-weight:900;}
+.timer-sidebar .timer-count small{font-size:16px;}
+@media(max-width:680px){.timer-sidebar .timer-count{font-size:42px;min-width:105px;padding:9px 12px;}}
