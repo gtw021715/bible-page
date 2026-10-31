@@ -24,6 +24,7 @@
           <select id="game-mode">
             <option value="order">目錄順序填空</option>
             <option value="category">書卷分類配對</option>
+            <option value="testament">分辨新舊約</option>
           </select>
         </label>
         <label>抽考範圍
@@ -41,10 +42,7 @@
           </select>
         </label>
         <label>每回合題數
-          <select id="question-count">
-            <option>10</option><option selected>20</option><option>30</option>
-            <option>40</option><option>50</option><option>66</option>
-          </select>
+          <div class="fixed-count" aria-label="每回合固定 10 題">10 題</div>
         </label>
       </div>
       <button id="start-btn" class="primary wide">開始抽考 <span>→</span></button>

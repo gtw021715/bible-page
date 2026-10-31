@@ -13,7 +13,7 @@ const CATEGORIES = [
   {name:"普通書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
-let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=20, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
+let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
@@ -24,7 +24,8 @@ function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value,difficul
   questions=chosen.map(book=>({book,scope:OLD.includes(book)?"舊約":"新約",category:CATEGORIES.find(c=>c.books.includes(book))?.name||"其他"}));
   index=0;correct=0;wrong=[];answered=false;
   $("setup").classList.add("hidden");$("result").classList.add("hidden");$("quiz").classList.remove("hidden");
-  $("scope-label").textContent=(scope==="old"?"舊約":scope==="new"?"新約":"新舊約混合")+(mode==="category"?"・分類配對":"・目錄抽考");
+  const modeLabel=mode==="category"?"書卷分類配對":mode==="testament"?"分辨新舊約":"目錄順序填空";
+  $("scope-label").textContent=(scope==="old"?"舊約":scope==="new"?"新約":"新舊約混合")+"・"+modeLabel;
   renderQuestion();
 }
 function stopTimer(){
@@ -32,26 +33,29 @@ function stopTimer(){
 }
 function startTimer(){
   stopTimer();
-  timeLeft=40;
+  const duration=40;
   const value=$("timer-value"), bar=$("timer-bar");
-  value.textContent=timeLeft;
+  const deadline=Date.now()+duration*1000;
+  timeLeft=duration;
+  value.textContent=String(duration);
   bar.style.width="100%";
   bar.classList.remove("urgent");
   timerInterval=setInterval(()=>{
-    timeLeft--;
-    value.textContent=timeLeft;
-    bar.style.width=`${Math.max(0,timeLeft/40*100)}%`;
-    if(timeLeft<=10)bar.classList.add("urgent");
-    if(timeLeft<=0){
+    const remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));
+    timeLeft=remaining;
+    value.textContent=String(remaining);
+    bar.style.width=`${Math.max(0,(deadline-Date.now())/(duration*1000)*100)}%`;
+    if(remaining<=10)bar.classList.add("urgent");
+    if(remaining<=0){
       stopTimer();
       if(!answered){
         answered=true;
-        const q=questions[index], expected=lastMode==="category"?q.category:q.book;
+        const q=questions[index], expected=lastMode==="category"?q.category:lastMode==="testament"?q.scope:q.book;
         wrong.push({book:q.book,answer:"時間到（未作答）",expected,mode:lastMode});
         nextQuestion();
       }
     }
-  },1000);
+  },200);
 }
 function renderQuestion(){
   stopTimer();
@@ -64,6 +68,11 @@ function renderQuestion(){
     $("book-list").innerHTML=`<div class="category-prompt"><span class="category-book-icon">📖</span><span class="category-book-name">${q.book}</span><span class="category-book-sub">請選擇正確的分類</span></div>`;
     const categories=CATEGORIES.map(c=>c.name);
     opts=shuffle([q.category,...shuffle(categories.filter(c=>c!==q.category)).slice(0,3)]);
+  }else if(lastMode==="testament"){
+    $("question-hint").textContent="分辨新舊約";
+    $("question-title").textContent=`「${q.book}」屬於新約還是舊約？`;
+    $("book-list").innerHTML=`<div class="category-prompt"><span class="category-book-icon">📖</span><span class="category-book-name">${q.book}</span><span class="category-book-sub">請選擇所屬約卷</span></div>`;
+    opts=shuffle(["舊約","新約"]);
   }else{
     $("question-hint").textContent="請選出空格中正確的聖經書卷";
     $("question-title").textContent="以下目錄中，缺少的是哪一卷？";
@@ -91,7 +100,7 @@ function renderQuestion(){
 }
 function choose(answer){
   if(answered)return;answered=true;stopTimer();
-  const q=questions[index], expected=lastMode==="category"?q.category:q.book, isCorrect=answer===expected;
+  const q=questions[index], expected=lastMode==="category"?q.category:lastMode==="testament"?q.scope:q.book, isCorrect=answer===expected;
   if(isCorrect)correct++;else wrong.push({book:q.book,answer,expected,mode:lastMode});
   $("options").querySelectorAll("button").forEach(btn=>{
     btn.disabled=true;
@@ -111,10 +120,10 @@ function showResult(){
   $("score").textContent=score;$("correct-count").textContent=correct;$("wrong-count").textContent=wrong.length;$("accuracy").textContent=pct+"%";
   $("result-message").textContent=pct===100?"太厲害了！全部答對，已經熟悉這回合的目錄！":pct>=80?"表現很好！再練習幾次就能更加熟悉聖經目錄。":pct>=60?"做得不錯，看看錯題再挑戰一次吧！":"別氣餒，透過錯題重練會越來越熟悉！";
   const review=$("wrong-review"), list=$("wrong-list");
-  if(wrong.length){review.classList.remove("hidden");list.innerHTML=wrong.map((w,i)=>`<div class="wrong-row">${i+1}. ${w.mode==="category"?`書卷：${w.book}；正確分類：`:`正確答案：`}<strong>${w.expected||w.book}</strong>　你的答案：${w.answer}</div>`).join("");}
+  if(wrong.length){review.classList.remove("hidden");list.innerHTML=wrong.map((w,i)=>`<div class="wrong-row">${i+1}. ${w.mode==="category"?`書卷：${w.book}；正確分類：`:w.mode==="testament"?`書卷：${w.book}；所屬約卷：`:`正確答案：`}<strong>${w.expected||w.book}</strong>　你的答案：${w.answer}</div>`).join("");}
   else review.classList.add("hidden");
 }
-$("start-btn").addEventListener("click",()=>startQuiz($("scope").value,Number($("question-count").value),null,$("game-mode").value,$("difficulty").value));
+$("start-btn").addEventListener("click",()=>startQuiz($("scope").value,10,null,$("game-mode").value,$("difficulty").value));
 $("next-btn").addEventListener("click",nextQuestion);
 $("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){stopTimer();$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
 $("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode,lastDifficulty));

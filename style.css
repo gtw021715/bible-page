@@ -76,3 +76,5 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 .timer-track{height:6px;background:#f0e8dc;border-radius:20px;overflow:hidden;margin-bottom:16px}
 .timer-track div{height:100%;width:100%;background:#d99d45;border-radius:20px;transition:width 1s linear,background .2s}
 .timer-track div.urgent{background:#c34c43}
+
+.fixed-count{width:100%;padding:13px 14px;border:1px solid #e6d9c6;border-radius:12px;background:#fbf5e9;color:var(--brown);font-weight:800}
