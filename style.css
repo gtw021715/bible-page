@@ -69,3 +69,10 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 @media(max-width:520px){body{padding:16px 10px}.setting-grid{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}.book-list{grid-template-columns:1fr;padding:12px;gap:7px}.book-item{font-size:12px;padding:8px 6px}.options{grid-template-columns:1fr}.verse{font-size:11px}.panel{border-radius:18px}}
 
 .category-prompt{grid-column:1/-1;min-height:190px;border-radius:14px;background:linear-gradient(135deg,#fff4db,#f5e4c4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:22px;text-align:center}.category-book-icon{font-size:36px}.category-book-name{font-size:27px;font-weight:900;color:var(--brown)}.category-book-sub{font-size:13px;color:#8d755b}
+
+
+.timer-row{display:flex;justify-content:space-between;align-items:center;margin:0 0 7px;color:#806b57;font-size:13px}
+.timer-row strong{font-size:16px;color:var(--brown);font-variant-numeric:tabular-nums}
+.timer-track{height:6px;background:#f0e8dc;border-radius:20px;overflow:hidden;margin-bottom:16px}
+.timer-track div{height:100%;width:100%;background:#d99d45;border-radius:20px;transition:width 1s linear,background .2s}
+.timer-track div.urgent{background:#c34c43}

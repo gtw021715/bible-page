@@ -13,7 +13,7 @@ const CATEGORIES = [
   {name:"普通書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
-let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=20, lastMode="order", lastDifficulty="normal";
+let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=20, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
@@ -27,7 +27,34 @@ function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value,difficul
   $("scope-label").textContent=(scope==="old"?"舊約":scope==="new"?"新約":"新舊約混合")+(mode==="category"?"・分類配對":"・目錄抽考");
   renderQuestion();
 }
+function stopTimer(){
+  if(timerInterval!==null){clearInterval(timerInterval);timerInterval=null;}
+}
+function startTimer(){
+  stopTimer();
+  timeLeft=40;
+  const value=$("timer-value"), bar=$("timer-bar");
+  value.textContent=timeLeft;
+  bar.style.width="100%";
+  bar.classList.remove("urgent");
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    value.textContent=timeLeft;
+    bar.style.width=`${Math.max(0,timeLeft/40*100)}%`;
+    if(timeLeft<=10)bar.classList.add("urgent");
+    if(timeLeft<=0){
+      stopTimer();
+      if(!answered){
+        answered=true;
+        const q=questions[index], expected=lastMode==="category"?q.category:q.book;
+        wrong.push({book:q.book,answer:"時間到（未作答）",expected,mode:lastMode});
+        nextQuestion();
+      }
+    }
+  },1000);
+}
 function renderQuestion(){
+  stopTimer();
   answered=false;
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
   let opts=[];
@@ -60,9 +87,10 @@ function renderQuestion(){
   $("progress-label").textContent=`第 ${index+1} / ${questions.length} 題`;
   $("progress-bar").style.width=`${index/questions.length*100}%`;
   $("feedback").className="feedback hidden";$("next-btn").classList.add("hidden");
+  startTimer();
 }
 function choose(answer){
-  if(answered)return;answered=true;
+  if(answered)return;answered=true;stopTimer();
   const q=questions[index], expected=lastMode==="category"?q.category:q.book, isCorrect=answer===expected;
   if(isCorrect)correct++;else wrong.push({book:q.book,answer,expected,mode:lastMode});
   $("options").querySelectorAll("button").forEach(btn=>{
@@ -77,6 +105,7 @@ function choose(answer){
 }
 function nextQuestion(){if(index<questions.length-1){index++;renderQuestion();}else showResult();}
 function showResult(){
+  stopTimer();
   $("quiz").classList.add("hidden");$("result").classList.remove("hidden");
   const total=questions.length, pct=Math.round(correct/total*100), score=Math.round(correct/total*100);
   $("score").textContent=score;$("correct-count").textContent=correct;$("wrong-count").textContent=wrong.length;$("accuracy").textContent=pct+"%";
@@ -87,7 +116,7 @@ function showResult(){
 }
 $("start-btn").addEventListener("click",()=>startQuiz($("scope").value,Number($("question-count").value),null,$("game-mode").value,$("difficulty").value));
 $("next-btn").addEventListener("click",nextQuestion);
-$("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
+$("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){stopTimer();$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
 $("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode,lastDifficulty));
 $("home-btn").addEventListener("click",()=>{$("result").classList.add("hidden");$("setup").classList.remove("hidden");});
 $("retry-wrong-btn").addEventListener("click",()=>startQuiz(lastScope,wrong.length,wrong.map(w=>w.book),lastMode,lastDifficulty));
