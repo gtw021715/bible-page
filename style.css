@@ -171,3 +171,28 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
   .timer-sidebar .help-copy strong{font-size:clamp(11px,2.8vw,14px);white-space:nowrap;}
   .timer-sidebar .help-used-status{text-align:center;}
 }
+
+
+/* 修正求救工具：不再把三個按鈕擠在同一列。 */
+.quiz-layout {grid-template-columns:minmax(0,1fr) 330px;gap:20px}
+.timer-sidebar {min-width:0;padding:20px}
+.timer-sidebar .help-actions {padding:16px;margin-top:18px}
+.timer-sidebar .help-buttons {display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.timer-sidebar .help-btn {
+  display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
+  width:100%;min-height:72px;padding:14px 16px;gap:16px;text-align:left;
+}
+.timer-sidebar .help-icon {flex:0 0 44px;width:44px;height:44px;font-size:23px}
+.timer-sidebar .help-copy {display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;flex:1}
+.timer-sidebar .help-copy strong {font-size:18px;line-height:1.4;white-space:nowrap;word-break:keep-all}
+.timer-sidebar .help-used-status {display:block;font-size:13px;line-height:1.5;text-align:left;white-space:nowrap}
+@media(max-width:800px) {
+  .quiz-layout {grid-template-columns:minmax(0,1fr);gap:14px}
+  .timer-sidebar {position:static;grid-column:1;grid-row:1;padding:18px}
+  .quiz-main {grid-column:1;grid-row:2}
+  .timer-sidebar .help-buttons {grid-template-columns:minmax(0,1fr);gap:11px}
+  .timer-sidebar .help-btn {flex-direction:row;text-align:left;min-height:70px;padding:13px 16px;gap:15px}
+  .timer-sidebar .help-copy {align-items:flex-start;width:auto}
+  .timer-sidebar .help-copy strong {font-size:18px}
+  .timer-sidebar .help-used-status {text-align:left}
+}
