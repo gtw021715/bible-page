@@ -65,7 +65,7 @@ function renderQuestion(){
   fiftyBtn.classList.toggle("hidden", lastMode!=="order");
   fiftyBtn.disabled=false;
   fiftyBtn.classList.remove("used");
-  fiftyBtn.textContent="✂️ 50/50　刪除兩個選項";
+  fiftyBtn.innerHTML='<span class="fifty-icon" aria-hidden="true">½</span><span class="fifty-copy"><strong>50/50 選項刪除</strong><small>移除 2 個錯誤選項</small></span><span class="fifty-spark" aria-hidden="true">✦</span>';
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
   let opts=[];
   if(lastMode==="category"){
@@ -110,9 +110,9 @@ function useFiftyFifty(){
   const buttons=[...$("options").querySelectorAll("button")];
   const expected=questions[index].book;
   const wrongButtons=shuffle(buttons.filter(btn=>btn.dataset.answer!==expected));
-  wrongButtons.slice(0,2).forEach(btn=>{btn.disabled=true;btn.classList.add("eliminated");btn.setAttribute("aria-label",btn.dataset.answer+"（已刪除）");});
+  wrongButtons.slice(0,2).forEach(btn=>btn.remove());
   fiftyUsed=true;
-  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.textContent="✓ 已使用 50/50";
+  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.innerHTML='<span class="fifty-icon" aria-hidden="true">✓</span><span class="fifty-copy"><strong>50/50 已使用</strong><small>本題已移除兩個錯誤選項</small></span>';
 }
 function choose(answer){
   if(answered)return;answered=true;stopTimer();
