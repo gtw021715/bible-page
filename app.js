@@ -115,7 +115,6 @@ function renderQuestion(){
   $("options").innerHTML=opts.map((b,i)=>`<button class="option" data-answer="${b}"><span class="letter">${"ABCD"[i]}</span>${b}</button>`).join("");
   $("options").querySelectorAll("button").forEach(btn=>btn.addEventListener("click",()=>choose(btn.dataset.answer)));
   $("progress-label").textContent=`第 ${index+1} / ${questions.length} 題`;
-  $("progress-bar").style.width=`${index/questions.length*100}%`;
   $("feedback").className="feedback hidden";$("next-btn").classList.add("hidden");
   startTimer();
 }
