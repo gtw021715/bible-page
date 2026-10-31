@@ -153,8 +153,10 @@ function askTeacher(){
   }else if(lastMode==="category"){
     const clues={"摩西五經":"這類書卷記載律法與以色列民族的起源。","歷史書":"這類書卷主要記載以色列民族的歷史。","詩歌智慧書":"這類書卷包含詩歌、禱告及人生智慧。","大先知書":"這類書卷是篇幅較長的先知著作。","小先知書":"這類書卷是篇幅較短的先知著作。","四福音書":"這類書卷記載耶穌的生平與教導。","新約歷史書":"這類書卷記載初代教會的發展。","保羅書信":"這類書卷是保羅寫給教會或個人的書信。","一般書信":"這類書卷屬於其他使徒與信徒的書信。","預言書":"這類書卷主要記載末世異象與啟示。"};
     showHelpMessage(`老師提示：${clues[q.category]||"想想這卷書的內容與文體。"}`);
-  }else{
-    showHelpMessage(`老師提示：「${q.book}」是${q.scope}的第 ${pos} 卷。`);
+  }else if(lastMode==="testament"){
+    // 分辨新舊約：問老師不顯示任何老師提示；其他模式維持原樣。
+    $("help-feedback").textContent="";
+    $("help-feedback").classList.add("hidden");
   }
   teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"問老師",true);
 }
