@@ -50,9 +50,10 @@
         <span id="scope-label" class="tag">混合抽考</span>
         <span id="progress-label" class="muted">第 1 / 20 題</span>
       </div>
-      <div class="timer-row" aria-live="polite">
-        <span>本題剩餘時間</span>
-        <strong><span id="timer-value">40</span> 秒</strong>
+      <div class="timer-card" aria-live="polite">
+        <span class="timer-icon" aria-hidden="true">⏱</span>
+        <div class="timer-copy"><span>本題倒數計時</span><small>請把握時間作答</small></div>
+        <strong class="timer-count"><span id="timer-value">40</span><small>秒</small></strong>
       </div>
       <div class="timer-track"><div id="timer-bar"></div></div>
       <div class="progress"><div id="progress-bar"></div></div>
@@ -62,6 +63,7 @@
       </div>
       <div id="book-list" class="book-list"></div>
       <div id="options" class="options"></div>
+      <button id="fifty-btn" class="fifty-btn">✂️ 50/50　刪除兩個選項</button>
       <div id="feedback" class="feedback hidden" aria-live="polite"></div>
       <button id="next-btn" class="primary wide hidden">下一題 →</button>
       <button id="quit-btn" class="text-btn">結束本回合</button>

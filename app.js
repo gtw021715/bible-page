@@ -13,7 +13,7 @@ const CATEGORIES = [
   {name:"普通書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
-let questions=[], index=0, correct=0, wrong=[], answered=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
+let questions=[], index=0, correct=0, wrong=[], answered=false, fiftyUsed=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40;
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
@@ -60,6 +60,12 @@ function startTimer(){
 function renderQuestion(){
   stopTimer();
   answered=false;
+  fiftyUsed=false;
+  const fiftyBtn=$("fifty-btn");
+  fiftyBtn.classList.toggle("hidden", lastMode!=="order");
+  fiftyBtn.disabled=false;
+  fiftyBtn.classList.remove("used");
+  fiftyBtn.textContent="✂️ 50/50　刪除兩個選項";
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
   let opts=[];
   if(lastMode==="category"){
@@ -99,6 +105,15 @@ function renderQuestion(){
   $("feedback").className="feedback hidden";$("next-btn").classList.add("hidden");
   startTimer();
 }
+function useFiftyFifty(){
+  if(fiftyUsed || answered || lastMode!=="order") return;
+  const buttons=[...$("options").querySelectorAll("button")];
+  const expected=questions[index].book;
+  const wrongButtons=shuffle(buttons.filter(btn=>btn.dataset.answer!==expected));
+  wrongButtons.slice(0,2).forEach(btn=>{btn.disabled=true;btn.classList.add("eliminated");btn.setAttribute("aria-label",btn.dataset.answer+"（已刪除）");});
+  fiftyUsed=true;
+  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.textContent="✓ 已使用 50/50";
+}
 function choose(answer){
   if(answered)return;answered=true;stopTimer();
   const q=questions[index], expected=lastMode==="category"?q.category:lastMode==="testament"?q.scope:q.book, isCorrect=answer===expected;
@@ -126,6 +141,7 @@ function showResult(){
 }
 $("start-btn").addEventListener("click",()=>startQuiz($("scope").value,10,null,$("game-mode").value,$("difficulty").value));
 $("next-btn").addEventListener("click",nextQuestion);
+$("fifty-btn").addEventListener("click",useFiftyFifty);
 $("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合嗎？目前成績將不會保留。")){stopTimer();$("quiz").classList.add("hidden");$("setup").classList.remove("hidden");}});
 $("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode,lastDifficulty));
 $("home-btn").addEventListener("click",()=>{$("result").classList.add("hidden");$("setup").classList.remove("hidden");});
