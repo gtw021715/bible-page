@@ -73,7 +73,8 @@ function setHelpLabel(button, label, used){
 function renderQuestion(){
   stopTimer();
   answered=false;
-  $("help-actions").classList.toggle("hidden", lastMode!=="order");
+  $("help-actions").classList.remove("hidden");
+  $("fifty-btn").classList.toggle("hidden", lastMode==="testament");
   [["fifty-btn",fiftyUsed,"50/50"],["teacher-btn",teacherUsed,"問老師"],["bible-btn",bibleUsed,"翻聖經10秒"]].forEach(([id,used,label])=>{
     const btn=$(id);btn.disabled=used;btn.classList.toggle("used",used);
     setHelpLabel(btn, label, used);
@@ -119,9 +120,9 @@ function renderQuestion(){
   startTimer();
 }
 function useFiftyFifty(){
-  if(fiftyUsed || answered || lastMode!=="order") return;
+  if(fiftyUsed || answered || lastMode==="testament") return;
   const buttons=[...$("options").querySelectorAll("button")];
-  const expected=questions[index].book;
+  const expected=lastMode==="category"?questions[index].category:questions[index].book;
   const wrongButtons=shuffle(buttons.filter(btn=>btn.dataset.answer!==expected));
   wrongButtons.slice(0,2).forEach(btn=>btn.remove());
   [...$("options").querySelectorAll("button")].forEach((option,i)=>{
@@ -135,15 +136,22 @@ function showHelpMessage(message){
   const el=$("help-feedback");el.textContent=message;el.classList.remove("hidden");
 }
 function askTeacher(){
-  if(teacherUsed || answered || lastMode!=="order") return;
+  if(teacherUsed || answered) return;
   const q=questions[index];
   const category=CATEGORIES.find(c=>c.books.includes(q.book));
   const pos=(q.scope==="舊約"?OLD:NEW).indexOf(q.book)+1;
-  showHelpMessage(`老師提示：這卷書屬於「${category?.name||q.scope}」。在${q.scope}中排第 ${pos} 卷。`);
+  if(lastMode==="order"){
+    showHelpMessage(`老師提示：這卷書屬於「${category?.name||q.scope}」。在${q.scope}中排第 ${pos} 卷。`);
+  }else if(lastMode==="category"){
+    const clues={"摩西五經":"這類書卷記載律法與以色列民族的起源。","歷史書":"這類書卷主要記載以色列民族的歷史。","詩歌智慧書":"這類書卷包含詩歌、禱告及人生智慧。","大先知書":"這類書卷是篇幅較長的先知著作。","小先知書":"這類書卷是篇幅較短的先知著作。","四福音書":"這類書卷記載耶穌的生平與教導。","新約歷史書":"這類書卷記載初代教會的發展。","保羅書信":"這類書卷是保羅寫給教會或個人的書信。","一般書信":"這類書卷屬於其他使徒與信徒的書信。","預言書":"這類書卷主要記載末世異象與啟示。"};
+    showHelpMessage(`老師提示：${clues[q.category]||"想想這卷書的內容與文體。"}`);
+  }else{
+    showHelpMessage(`老師提示：「${q.book}」是${q.scope}的第 ${pos} 卷。`);
+  }
   teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"問老師",true);
 }
 function useBibleTime(){
-  if(bibleUsed || answered || lastMode!=="order") return;
+  if(bibleUsed || answered) return;
   timerDeadline+=10000;
   bibleUsed=true;
   const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"翻聖經10秒",true);
