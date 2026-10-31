@@ -13,7 +13,7 @@ const CATEGORIES = [
   {name:"一般書信", books:["希伯來書","雅各書","彼得前書","彼得後書","約翰一書","約翰二書","約翰三書","猶大書"]},
   {name:"預言書", books:["啟示錄"]}
 ];
-let questions=[], index=0, correct=0, wrong=[], answered=false, fiftyUsed=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=40, timerDeadline=0, bibleUsed=false, teacherUsed=false;
+let questions=[], index=0, correct=0, wrong=[], answered=false, fiftyUsed=false, lastScope="all", lastCount=10, lastMode="order", lastDifficulty="normal", timerInterval=null, timeLeft=30, timerDeadline=0, bibleUsed=false, teacherUsed=false;
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function poolFor(scope){return scope==="old"?OLD:scope==="new"?NEW:[...OLD,...NEW];}
@@ -36,7 +36,7 @@ function updateTimerDisplay(){
   const value=$("timer-value"), bar=$("timer-bar");
   if(value) value.textContent=String(timeLeft);
   if(bar){
-    bar.style.width=`${Math.min(100,timeLeft/40*100)}%`;
+    bar.style.width=`${Math.min(100,timeLeft/30*100)}%`;
     bar.classList.toggle("urgent",timeLeft<=10);
   }
 }
@@ -61,8 +61,8 @@ function timerTick(){
 }
 function startTimer(){
   stopTimer();
-  timeLeft=40;
-  timerDeadline=Date.now()+40000;
+  timeLeft=30;
+  timerDeadline=Date.now()+30000;
   updateTimerDisplay();
   timerInterval=setInterval(timerTick,250);
 }
@@ -145,6 +145,13 @@ function showHelpMessage(message){
 }
 function askTeacher(){
   if(teacherUsed || answered) return;
+  if(lastMode==="testament") {
+    $("help-feedback").textContent="";
+    $("help-feedback").classList.add("hidden");
+    teacherUsed=true;
+    const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"問老師",true);
+    return;
+  }
   const q=questions[index];
   const category=CATEGORIES.find(c=>c.books.includes(q.book));
   const pos=(q.scope==="舊約"?OLD:NEW).indexOf(q.book)+1;
@@ -153,10 +160,6 @@ function askTeacher(){
   }else if(lastMode==="category"){
     const clues={"摩西五經":"這類書卷記載律法與以色列民族的起源。","歷史書":"這類書卷主要記載以色列民族的歷史。","詩歌智慧書":"這類書卷包含詩歌、禱告及人生智慧。","大先知書":"這類書卷是篇幅較長的先知著作。","小先知書":"這類書卷是篇幅較短的先知著作。","四福音書":"這類書卷記載耶穌的生平與教導。","新約歷史書":"這類書卷記載初代教會的發展。","保羅書信":"這類書卷是保羅寫給教會或個人的書信。","一般書信":"這類書卷屬於其他使徒與信徒的書信。","預言書":"這類書卷主要記載末世異象與啟示。"};
     showHelpMessage(`老師提示：${clues[q.category]||"想想這卷書的內容與文體。"}`);
-  }else if(lastMode==="testament"){
-    // 分辨新舊約：問老師不顯示任何老師提示；其他模式維持原樣。
-    $("help-feedback").textContent="";
-    $("help-feedback").classList.add("hidden");
   }
   teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");setHelpLabel(btn,"問老師",true);
 }
