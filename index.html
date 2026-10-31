@@ -13,11 +13,19 @@
       <div class="book-icon" aria-hidden="true">📖</div>
       <p class="eyebrow">BIBLE BOOKS CHALLENGE</p>
       <h1>聖經目錄大挑戰</h1>
+      <p class="subtitle">用選擇題認識聖經 66 卷書</p>
     </header>
 
     <section id="setup" class="panel setup-panel">
       <h2>準備開始挑戰</h2>
+      <p class="muted">選擇抽考範圍與題數，系統會隨機出題，每回合不重複。</p>
       <div class="setting-grid">
+        <label>遊戲模式
+          <select id="game-mode">
+            <option value="order">目錄順序填空</option>
+            <option value="category">書卷分類配對</option>
+          </select>
+        </label>
         <label>抽考範圍
           <select id="scope">
             <option value="all">新舊約混合（66 卷）</option>
@@ -25,17 +33,12 @@
             <option value="new">新約（27 卷）</option>
           </select>
         </label>
-        <label>目錄提示模式
-          <select id="clue-mode">
-            <option value="four">上下顯示四卷</option>
-            <option value="two">上下顯示兩卷</option>
-            <option value="one-above">只顯示上面一卷</option>
+        <label>每回合題數
+          <select id="question-count">
+            <option>10</option><option selected>20</option><option>30</option>
+            <option>40</option><option>50</option><option>66</option>
           </select>
         </label>
-        <div class="fixed-count" aria-label="每回合固定 10 題">
-          <span class="fixed-count-label">每回合題數</span>
-          <strong>10 題</strong>
-        </div>
       </div>
       <button id="start-btn" class="primary wide">開始抽考 <span>→</span></button>
     </section>
@@ -47,8 +50,8 @@
       </div>
       <div class="progress"><div id="progress-bar"></div></div>
       <div class="question-heading">
-        <p class="muted">請選出空格中正確的聖經書卷</p>
-        <h2>以下目錄中，缺少的是哪一卷？</h2>
+        <p id="question-hint" class="muted">請選出空格中正確的聖經書卷</p>
+        <h2 id="question-title">以下目錄中，缺少的是哪一卷？</h2>
       </div>
       <div id="book-list" class="book-list"></div>
       <div id="options" class="options"></div>
