@@ -83,13 +83,13 @@ function renderQuestion(){
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
   let opts=[];
   if(lastMode==="category"){
-    $("question-hint").textContent="書卷分類配對";
+    $("question-hint").textContent="";
     $("question-title").textContent=`「${q.book}」屬於哪一類書卷？`;
     $("book-list").innerHTML=`<div class="category-prompt"><span class="category-book-icon">📖</span><span class="category-book-name">${q.book}</span><span class="category-book-sub">請選擇正確的分類</span></div>`;
     const categories=CATEGORIES.map(c=>c.name);
     opts=shuffle([q.category,...shuffle(categories.filter(c=>c!==q.category)).slice(0,3)]);
   }else if(lastMode==="testament"){
-    $("question-hint").textContent="分辨新舊約";
+    $("question-hint").textContent="";
     $("question-title").textContent=`「${q.book}」屬於新約還是舊約？`;
     $("book-list").innerHTML=`<div class="category-prompt"><span class="category-book-icon">📖</span><span class="category-book-name">${q.book}</span><span class="category-book-sub">請選擇所屬約卷</span></div>`;
     opts=shuffle(["舊約","新約"]);
@@ -109,7 +109,7 @@ function renderQuestion(){
     }
     $("book-list").innerHTML=visibleBooks.join("");
     const difficultyNames={easy:"簡單",normal:"普通",hard:"困難"};
-    $("question-hint").textContent=`${difficultyNames[lastDifficulty]}難度：依照相鄰書卷判斷`;
+    $("question-hint").textContent="";
     opts=shuffle([q.book,...shuffle(pool.filter(b=>b!==q.book)).slice(0,3)]);
   }
   $("options").innerHTML=opts.map((b,i)=>`<button class="option" data-answer="${b}"><span class="letter">${"ABCD"[i]}</span>${b}</button>`).join("");
