@@ -77,8 +77,9 @@ function renderQuestion(){
     $("question-hint").textContent="請選出空格中正確的聖經書卷";
     $("question-title").textContent="以下目錄中，缺少的是哪一卷？";
     const pos=pool.indexOf(q.book);
-    const beforeCount=lastDifficulty==="easy"?1:lastDifficulty==="normal"?1:2;
-    const afterCount=lastDifficulty==="easy"?0:lastDifficulty==="normal"?1:2;
+    // 簡單與困難對調：簡單顯示上下各兩卷，普通顯示上下各一卷，困難只顯示上方一卷
+    const beforeCount=lastDifficulty==="easy"?2:lastDifficulty==="normal"?1:1;
+    const afterCount=lastDifficulty==="easy"?2:lastDifficulty==="normal"?1:0;
     const start=Math.max(0,pos-beforeCount);
     const end=Math.min(pool.length-1,pos+afterCount);
     const visibleBooks=[];
