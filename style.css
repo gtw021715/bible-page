@@ -150,3 +150,24 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 .timer-sidebar .help-buttons{grid-template-columns:1fr;gap:8px;}
 .timer-sidebar .help-btn{min-width:0;padding:9px 7px;}
 @media(max-width:680px){.timer-sidebar .help-actions{margin-top:10px;}.timer-sidebar .help-buttons{grid-template-columns:repeat(3,minmax(0,1fr));}.timer-sidebar .help-btn{flex-direction:column;gap:5px;text-align:center;}.timer-sidebar .help-icon{flex-basis:auto;}}
+
+/* Larger timer/help panel: keep all help button labels visible. */
+@media (min-width:681px){
+  .quiz-layout{grid-template-columns:minmax(0,1fr) 280px;gap:18px;}
+  .timer-sidebar{padding:18px;}
+  .timer-sidebar .timer-card{padding:18px 12px;}
+  .timer-sidebar .help-actions{padding:15px;}
+  .timer-sidebar .help-btn{padding:12px 13px;gap:11px;}
+}
+.timer-sidebar .help-copy{min-width:0;flex:1;}
+.timer-sidebar .help-copy strong{font-size:14px;white-space:nowrap;}
+.timer-sidebar #bible-btn .help-copy{min-width:0;}
+@media (max-width:680px){
+  .timer-sidebar{padding:14px;}
+  .timer-sidebar .help-actions{padding:13px;}
+  .timer-sidebar .help-buttons{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+  .timer-sidebar .help-btn{min-width:0;padding:12px 3px;gap:7px;}
+  .timer-sidebar .help-copy{align-items:center;width:100%;}
+  .timer-sidebar .help-copy strong{font-size:clamp(11px,2.8vw,14px);white-space:nowrap;}
+  .timer-sidebar .help-used-status{text-align:center;}
+}
