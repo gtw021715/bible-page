@@ -125,3 +125,6 @@ footer{text-align:center;color:#a18e79;font-size:12px;padding:22px}
 .help-feedback{margin-top:11px;padding:11px 13px;border-radius:11px;background:#f3eddf;color:#6d4b24;font-size:13px;line-height:1.65}
 @media(max-width:680px){.quiz-layout{grid-template-columns:1fr;gap:12px}.timer-sidebar{position:static;grid-column:1;grid-row:1;display:grid;grid-template-columns:minmax(0,1fr);padding:8px}.timer-sidebar .timer-card{flex-direction:row;text-align:left;justify-content:flex-start;padding:6px 8px}.timer-sidebar .timer-count{margin-left:auto;width:auto;min-width:78px;font-size:27px}.timer-sidebar .timer-icon{width:38px;height:38px;font-size:22px}.timer-sidebar .timer-track{margin:0 8px}.timer-note{display:none}.quiz-main{grid-row:2}.help-buttons{grid-template-columns:1fr}.help-btn{padding:9px 11px}.help-icon{flex-basis:36px;width:36px;height:36px}}
 .help-btn.fifty-btn{margin-top:0;width:100%;box-shadow:0 3px 0 #68431a0c}
+
+/* Keep the used-state label on its own line. */
+.help-copy strong{white-space:pre-line}
