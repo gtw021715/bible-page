@@ -22,7 +22,7 @@ function startQuiz(scope,count,onlyWrong=null,mode=$("game-mode").value,difficul
   const pool=poolFor(scope);
   const chosen=onlyWrong?shuffle(onlyWrong):shuffle(pool).slice(0,Math.min(count,pool.length));
   questions=chosen.map(book=>({book,scope:OLD.includes(book)?"舊約":"新約",category:CATEGORIES.find(c=>c.books.includes(book))?.name||"其他"}));
-  index=0;correct=0;wrong=[];answered=false;
+  index=0;correct=0;wrong=[];answered=false;fiftyUsed=false;teacherUsed=false;bibleUsed=false;
   $("setup").classList.add("hidden");$("result").classList.add("hidden");$("quiz").classList.remove("hidden");
   const modeLabel=mode==="category"?"書卷分類配對":mode==="testament"?"分辨新舊約":"目錄順序填空";
   $("scope-label").textContent=(scope==="old"?"舊約":scope==="new"?"新約":"新舊約混合")+"・"+modeLabel;
@@ -60,11 +60,11 @@ function startTimer(){
 function renderQuestion(){
   stopTimer();
   answered=false;
-  fiftyUsed=false; bibleUsed=false; teacherUsed=false;
   $("help-actions").classList.toggle("hidden", lastMode!=="order");
-  $("fifty-btn").disabled=false; $("fifty-btn").classList.remove("used");
-  $("teacher-btn").disabled=false; $("teacher-btn").classList.remove("used");
-  $("bible-btn").disabled=false; $("bible-btn").classList.remove("used");
+  [["fifty-btn",fiftyUsed,"50/50"],["teacher-btn",teacherUsed,"問老師"],["bible-btn",bibleUsed,"翻聖經 +10 秒"]].forEach(([id,used,label])=>{
+    const btn=$(id);btn.disabled=used;btn.classList.toggle("used",used);
+    btn.querySelector(".help-copy strong").textContent=used?`${label} 已使用`:label;
+  });
   $("help-feedback").classList.add("hidden"); $("help-feedback").textContent="";
   const q=questions[index], pool=q.scope==="舊約"?OLD:NEW;
   let opts=[];
@@ -116,7 +116,7 @@ function useFiftyFifty(){
     if(letter) letter.textContent="ABCD"[i];
   });
   fiftyUsed=true;
-  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>50/50 已使用</strong><small>已刪除兩個錯誤選項</small>';
+  const btn=$("fifty-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy strong").textContent="50/50 已使用";
 }
 function showHelpMessage(message){
   const el=$("help-feedback");el.textContent=message;el.classList.remove("hidden");
@@ -127,13 +127,13 @@ function askTeacher(){
   const category=CATEGORIES.find(c=>c.books.includes(q.book));
   const pos=(q.scope==="舊約"?OLD:NEW).indexOf(q.book)+1;
   showHelpMessage(`老師提示：這卷書屬於「${category?.name||q.scope}」。在${q.scope}中排第 ${pos} 卷。`);
-  teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>已問老師</strong><small>提示已提供</small>';
+  teacherUsed=true;const btn=$("teacher-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy strong").textContent="問老師 已使用";
 }
 function useBibleTime(){
   if(bibleUsed || answered || lastMode!=="order") return;
   timerDeadline+=10000;
   bibleUsed=true;
-  const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy").innerHTML='<strong>已翻聖經</strong><small>增加 10 秒查找時間</small>';
+  const btn=$("bible-btn");btn.disabled=true;btn.classList.add("used");btn.querySelector(".help-copy strong").textContent="翻聖經 +10 秒 已使用";
   showHelpMessage("📖 已為你增加 10 秒，快把握時間查找！");
 }
 function choose(answer){
