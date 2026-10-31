@@ -130,3 +130,9 @@ $("quit-btn").addEventListener("click",()=>{if(confirm("確定要結束本回合
 $("again-btn").addEventListener("click",()=>startQuiz(lastScope,lastCount,null,lastMode,lastDifficulty));
 $("home-btn").addEventListener("click",()=>{$("result").classList.add("hidden");$("setup").classList.remove("hidden");});
 $("retry-wrong-btn").addEventListener("click",()=>startQuiz(lastScope,wrong.length,wrong.map(w=>w.book),lastMode,lastDifficulty));
+
+function updateDifficultyVisibility(){
+  $("difficulty-setting").classList.toggle("hidden", $("game-mode").value !== "order");
+}
+$("game-mode").addEventListener("change", updateDifficultyVisibility);
+updateDifficultyVisibility();
